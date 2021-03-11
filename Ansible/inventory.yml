@@ -1,0 +1,6 @@
+---
+-all:
+  hosts:
+    ansible-testing:
+      ansible_connection: docker
+      ansible_python_interpreter: python

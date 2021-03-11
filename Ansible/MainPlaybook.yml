@@ -1,0 +1,37 @@
+---
+- name: Create the Docker image
+  hosts: localhost
+  tasks:
+    - name: Build image
+      docker_image:
+        name: ansible-testing-image
+        path: /home/georgemanakanatas/Documents/projects/Ansible_testing/Docker               
+        state: present
+      become: true
+      become_method: sudo
+
+    - name: Create Docker container
+      docker_container:
+        name: ansible-testing
+        image: ansible-testing-image
+        tty: yes
+        detach: True
+        detach: yes
+        command: ["/usr/sbin/sshd", "-D"]
+        state: started
+      become: true
+      become_method: sudo
+    
+    - name: Add container to inventory
+      add_host:
+        name: ansible-testing-image
+        ansible_connection: docker
+      changed_when: false
+      become: true
+      become_method: sudo
+
+- name: Running things in there
+  hosts: ansible-testing-image
+  roles:
+    - role: chromium
+
